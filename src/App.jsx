@@ -7,6 +7,7 @@ import ProtectedRoute from './Componentes/ProtectedRoute';
 import AdminPanel from './Componentes/AdminPanel';
 import RegistroUsuario from './Componentes/RegistroUsuario';
 import Login from './Componentes/Login';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import './App.css'
 
@@ -17,6 +18,7 @@ function App() {
   return (
     
      <Provider store={store}>
+      <GoogleOAuthProvider clientId="737455985650-mdp35pj783ms660iu8c3tvc63pl13hga.apps.googleusercontent.com">
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -37,6 +39,7 @@ function App() {
             } />
         </Routes>
       </BrowserRouter>
+      </GoogleOAuthProvider>
     </Provider>
 
     // <BrowserRouter>
