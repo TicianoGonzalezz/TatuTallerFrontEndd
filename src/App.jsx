@@ -10,6 +10,7 @@ import Login from './Componentes/Login';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import './App.css'
+import Tienda from './Componentes/Tienda';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/registroUsuario" element={<RegistroUsuario />} />
+          <Route path="/tienda" element={<Tienda />} />
           <Route
   path="/admin"
   element={
