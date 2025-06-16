@@ -3,6 +3,8 @@ import Boton from './Boton';
 import ToastCustomizado from './ToastCustomizado';
 import { Container, Row, Form, Col, FormGroup, FormLabel, FormControl } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 const Login = () => {
   const baseURL = "http://localhost:8080/usuario/login";
@@ -70,6 +72,23 @@ const Login = () => {
     }
   };
 
+  const handleGoogleLogin = (credentialResponse) => {
+    axios.post('http://localhost:8080/usuario/login-google', {
+      token: credentialResponse.credential
+    }).then(res => {
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('nombre', res.data.usuario.nombre);
+      localStorage.setItem('rol', res.data.usuario.rol);
+      localStorage.setItem('iduser', res.data.usuario.id); // <-- AGREGÁ ESTA LÍNEA
+      if (res.data.apikey) {
+        localStorage.setItem('apikey', res.data.apikey); // <-- SOLO SI TU BACKEND LO ENVÍA
+      }
+      navigate("/inicio");
+    }).catch(err => {
+      alert('Error en el login con Google');
+    });
+  };
+
   return (
     <Container className="d-flex justify-content-center align-items-center min-vh-100">
       <div className="loginUsuario">
@@ -108,6 +127,13 @@ const Login = () => {
             variant={toastVariant}
           />
         </Form>
+        <h2 className="mt-4">O inicia sesión con Google</h2>
+        <GoogleLogin
+          onSuccess={handleGoogleLogin}
+          onError={() => {
+            alert('Error al iniciar sesión con Google');
+          }}
+        />
       </div>
     </Container>
   );
