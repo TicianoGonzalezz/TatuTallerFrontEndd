@@ -1,18 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsuarios, agregarUsuario, actualizarUsuario, eliminarUsuario } from "../Features/usuariosSlice";
+import {
+  fetchUsuarios,
+  agregarUsuario,
+  actualizarUsuario,
+  eliminarUsuario,
+} from "../Features/usuariosSlice";
 import ToastCustomizado from "./ToastCustomizado";
+import CrearClase from "./CrearClase"; // Asegúrate de importar el componente CrearClase
 
-const initialForm = { nombre: "", email: "", rol: "", password: "", password2: "" };
+const initialForm = {
+  nombre: "",
+  email: "",
+  rol: "",
+  password: "",
+  password2: "",
+};
 
 const AdminPanel = () => {
   const dispatch = useDispatch();
-  const usuarios = useSelector(state => state.usuarios.lista);
-  const loading = useSelector(state => state.usuarios.loading);
+  const usuarios = useSelector((state) => state.usuarios.lista);
+  const loading = useSelector((state) => state.usuarios.loading);
   const [modo, setModo] = useState("lista");
   const [form, setForm] = useState(initialForm);
   const [editId, setEditId] = useState(null);
-  const [toast, setToast] = useState({ show: false, message: "", variant: "success" });
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    variant: "success",
+  });
   const [busqueda, setBusqueda] = useState("");
   const [usuarioBuscado, setUsuarioBuscado] = useState(null);
   const [filtro, setFiltro] = useState("");
@@ -24,10 +40,16 @@ const AdminPanel = () => {
   const handleEliminar = async (id) => {
     if (!window.confirm("¿Seguro que deseas eliminar este usuario?")) return;
     try {
-      const res = await fetch(`http://localhost:8080/usuario/eliminar/${id}`, { method: "DELETE" });
+      const res = await fetch(`http://localhost:8080/usuario/eliminar/${id}`, {
+        method: "DELETE",
+      });
       if (res.ok) {
         dispatch(eliminarUsuario(id));
-        setToast({ show: true, message: "Usuario eliminado", variant: "success" });
+        setToast({
+          show: true,
+          message: "Usuario eliminado",
+          variant: "success",
+        });
       } else {
         const msg = await res.text();
         setToast({ show: true, message: msg, variant: "danger" });
@@ -44,7 +66,7 @@ const AdminPanel = () => {
       email: usuario.email,
       rol: usuario.rol,
       password: "",
-      password2: ""
+      password2: "",
     });
     setEditId(usuario.id);
     setModo("editar");
@@ -63,19 +85,35 @@ const AdminPanel = () => {
   const handleGuardar = async (e) => {
     e.preventDefault();
     if (form.nombre.trim().length < 4) {
-      setToast({ show: true, message: "El nombre debe tener al menos 4 caracteres.", variant: "danger" });
+      setToast({
+        show: true,
+        message: "El nombre debe tener al menos 4 caracteres.",
+        variant: "danger",
+      });
       return;
     }
     if (!form.email.endsWith("@gmail.com")) {
-      setToast({ show: true, message: "El email debe terminar en @gmail.com.", variant: "danger" });
+      setToast({
+        show: true,
+        message: "El email debe terminar en @gmail.com.",
+        variant: "danger",
+      });
       return;
     }
     if (!form.rol) {
-      setToast({ show: true, message: "Debe seleccionar un rol.", variant: "danger" });
+      setToast({
+        show: true,
+        message: "Debe seleccionar un rol.",
+        variant: "danger",
+      });
       return;
     }
     if (form.password !== form.password2) {
-      setToast({ show: true, message: "Las contraseñas no coinciden.", variant: "danger" });
+      setToast({
+        show: true,
+        message: "Las contraseñas no coinciden.",
+        variant: "danger",
+      });
       return;
     }
 
@@ -83,7 +121,7 @@ const AdminPanel = () => {
     const usuarioDTO = {
       nombre: form.nombre,
       email: form.email,
-      rol: form.rol
+      rol: form.rol,
     };
     formData.append("usuario", JSON.stringify(usuarioDTO));
     // Si tienes un archivo para adjuntar:
@@ -106,18 +144,26 @@ const AdminPanel = () => {
         method,
         body: formData,
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
           // No pongas 'Content-Type', fetch lo setea solo con FormData
-        }
+        },
       });
       if (res.ok) {
         const usuarioResp = await res.json();
         if (modo === "editar") {
-          dispatch(actualizarUsuario({ ...usuarioResp, password: "", password2: "" }));
+          dispatch(
+            actualizarUsuario({ ...usuarioResp, password: "", password2: "" })
+          );
         } else {
-          dispatch(agregarUsuario({ ...usuarioResp, password: "", password2: "" }));
+          dispatch(
+            agregarUsuario({ ...usuarioResp, password: "", password2: "" })
+          );
         }
-        setToast({ show: true, message: modo === "editar" ? "Usuario actualizado" : "Usuario creado", variant: "success" });
+        setToast({
+          show: true,
+          message: modo === "editar" ? "Usuario actualizado" : "Usuario creado",
+          variant: "success",
+        });
         setModo("lista");
       } else {
         const msg = await res.text();
@@ -132,17 +178,33 @@ const AdminPanel = () => {
   const handleBuscar = async () => {
     setUsuarioBuscado(null);
     if (!busqueda.endsWith("@gmail.com")) {
-      setToast({ show: true, message: "Debe ingresar un email @gmail.com", variant: "danger" });
+      setToast({
+        show: true,
+        message: "Debe ingresar un email @gmail.com",
+        variant: "danger",
+      });
       return;
     }
     try {
-      const res = await fetch(`http://localhost:8080/usuario/buscarPorEmail?email=${encodeURIComponent(busqueda)}`);
+      const res = await fetch(
+        `http://localhost:8080/usuario/buscarPorEmail?email=${encodeURIComponent(
+          busqueda
+        )}`
+      );
       if (res.ok) {
         const data = await res.json();
         setUsuarioBuscado(data);
-        setToast({ show: true, message: "Usuario encontrado", variant: "success" });
+        setToast({
+          show: true,
+          message: "Usuario encontrado",
+          variant: "success",
+        });
       } else {
-        setToast({ show: true, message: "Usuario no encontrado", variant: "danger" });
+        setToast({
+          show: true,
+          message: "Usuario no encontrado",
+          variant: "danger",
+        });
       }
     } catch {
       setToast({ show: true, message: "Error de conexión", variant: "danger" });
@@ -156,12 +218,14 @@ const AdminPanel = () => {
     // Pero si no, simplemente mostramos la lista redux.
   };
 
-  const usuariosFiltrados = filtro.trim() === ""
-    ? usuarios
-    : usuarios.filter(u =>
-        u.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
-        u.email.toLowerCase().includes(filtro.toLowerCase())
-      );
+  const usuariosFiltrados =
+    filtro.trim() === ""
+      ? usuarios
+      : usuarios.filter(
+          (u) =>
+            u.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
+            u.email.toLowerCase().includes(filtro.toLowerCase())
+        );
 
   return (
     <div className="container mt-4">
@@ -175,7 +239,7 @@ const AdminPanel = () => {
             className="form-control me-2"
             placeholder="Buscar usuario por nombre o email"
             value={filtro}
-            onChange={e => setFiltro(e.target.value)}
+            onChange={(e) => setFiltro(e.target.value)}
           />
           <button
             className="btn btn-secondary"
@@ -189,8 +253,14 @@ const AdminPanel = () => {
 
       {modo === "lista" && (
         <>
-          <button className="btn btn-primary mb-3" onClick={handleNuevo}>
+          <button className="btn btn-primary mb-3 me-2" onClick={handleNuevo}>
             Nuevo Usuario
+          </button>
+          <button
+            className="btn btn-success mb-3"
+            onClick={() => setModo("crearClase")}
+          >
+            Crear Clase
           </button>
           {loading ? (
             <div>Cargando...</div>
@@ -211,10 +281,16 @@ const AdminPanel = () => {
                     <td>{u.email}</td>
                     <td>{u.rol}</td>
                     <td>
-                      <button className="btn btn-warning btn-sm me-2" onClick={() => handleEditar(u)}>
+                      <button
+                        className="btn btn-warning btn-sm me-2"
+                        onClick={() => handleEditar(u)}
+                      >
                         Editar
                       </button>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(u.id)}>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleEliminar(u.id)}
+                      >
                         Eliminar
                       </button>
                     </td>
@@ -285,13 +361,24 @@ const AdminPanel = () => {
               required={modo === "nuevo"}
             />
           </div>
-          <button type="submit" className="btn btn-success me-2" disabled={loading}>
+          <button
+            type="submit"
+            className="btn btn-success me-2"
+            disabled={loading}
+          >
             Guardar
           </button>
-          <button type="button" className="btn btn-secondary" onClick={() => setModo("lista")}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setModo("lista")}
+          >
             Cancelar
           </button>
         </form>
+      )}
+      {modo === "crearClase" && (
+        <CrearClase onVolver={() => setModo("lista")} />
       )}
       <ToastCustomizado
         show={toast.show}
