@@ -17,6 +17,8 @@ const initialForm = {
   password2: "",
 };
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const AdminPanel = () => {
   const dispatch = useDispatch();
   const usuarios = useSelector((state) => state.usuarios.lista);
@@ -40,7 +42,7 @@ const AdminPanel = () => {
   const handleEliminar = async (id) => {
     if (!window.confirm("¿Seguro que deseas eliminar este usuario?")) return;
     try {
-      const res = await fetch(`http://localhost:8080/usuario/eliminar/${id}`, {
+      const res = await fetch(`${apiUrl}/usuario/eliminar/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -131,10 +133,10 @@ const AdminPanel = () => {
     formData.append("password", form.password);
     formData.append("password2", form.password2);
 
-    let url = "http://localhost:8080/usuario/crearUsuarioDesdeUnAdministrador";
+    let url = `${apiUrl}/usuario/crearUsuarioDesdeUnAdministrador`;
     let method = "POST";
     if (modo === "editar" && editId) {
-      url = `http://localhost:8080/usuario/actualizar/${editId}`;
+      url = `${apiUrl}/usuario/actualizar/${editId}`;
       method = "PUT";
     }
 
@@ -187,9 +189,7 @@ const AdminPanel = () => {
     }
     try {
       const res = await fetch(
-        `http://localhost:8080/usuario/buscarPorEmail?email=${encodeURIComponent(
-          busqueda
-        )}`
+        `${apiUrl}/usuario/buscarPorEmail?email=${encodeURIComponent(busqueda)}`
       );
       if (res.ok) {
         const data = await res.json();
