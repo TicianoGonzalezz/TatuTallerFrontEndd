@@ -3,6 +3,8 @@ import { Form, Spinner } from "react-bootstrap";
 import Boton from "./Boton";
 import ToastCustomizado from "./ToastCustomizado";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const CrearClase = ({ onVolver }) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -19,7 +21,7 @@ const CrearClase = ({ onVolver }) => {
     setLoading(true);
     setMensaje("");
     try {
-      const res = await fetch("http://localhost:8080/clase", {
+      const res = await fetch(`${apiUrl}/clase`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

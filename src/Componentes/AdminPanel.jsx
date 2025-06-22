@@ -1,25 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchUsuarios,
-  agregarUsuario,
-  actualizarUsuario,
-  eliminarUsuario,
-} from "../Features/usuariosSlice";
+import UsuarioABM from "./UsuarioABM";
+import ProductoABM from "./ProductoAMB";
+import CrearClase from "./CrearClase";
 import ToastCustomizado from "./ToastCustomizado";
-import CrearClase from "./CrearClase"; // Asegúrate de importar el componente CrearClase
-
-const initialForm = {
-  nombre: "",
-  email: "",
-  rol: "",
-  password: "",
-  password2: "",
-};
+import React, { useState } from "react";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const AdminPanel = () => {
+<<<<<<< HEAD
   const dispatch = useDispatch();
   const usuarios = useSelector((state) => state.usuarios.lista);
   const loading = useSelector((state) => state.usuarios.loading);
@@ -226,166 +214,37 @@ const AdminPanel = () => {
             u.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
             u.email.toLowerCase().includes(filtro.toLowerCase())
         );
+=======
+  const [seccion, setSeccion] = useState("usuarios");
+>>>>>>> ae66fc5af3cdf3b5cfe8bdbb0a30f3ce5afa223f
 
   return (
     <div className="container mt-4">
       <h1>Panel de Administración</h1>
+      <div className="mb-4">
+        <button
+          className={`btn me-2 ${seccion === "usuarios" ? "btn-primary" : "btn-outline-primary"}`}
+          onClick={() => setSeccion("usuarios")}
+        >
+          Usuarios
+        </button>
+        <button
+          className={`btn me-2 ${seccion === "productos" ? "btn-primary" : "btn-outline-primary"}`}
+          onClick={() => setSeccion("productos")}
+        >
+          Productos
+        </button>
+        <button
+          className={`btn ${seccion === "clases" ? "btn-primary" : "btn-outline-primary"}`}
+          onClick={() => setSeccion("clases")}
+        >
+          Clases
+        </button>
+      </div>
 
-      {/* Buscar usuario por gmail */}
-      {modo === "lista" && (
-        <div className="mb-3 d-flex align-items-center">
-          <input
-            type="text"
-            className="form-control me-2"
-            placeholder="Buscar usuario por nombre o email"
-            value={filtro}
-            onChange={(e) => setFiltro(e.target.value)}
-          />
-          <button
-            className="btn btn-secondary"
-            onClick={() => setFiltro("")}
-            disabled={loading || filtro === ""}
-          >
-            Limpiar filtro
-          </button>
-        </div>
-      )}
-
-      {modo === "lista" && (
-        <>
-          <button className="btn btn-primary mb-3 me-2" onClick={handleNuevo}>
-            Nuevo Usuario
-          </button>
-          <button
-            className="btn btn-success mb-3"
-            onClick={() => setModo("crearClase")}
-          >
-            Crear Clase
-          </button>
-          {loading ? (
-            <div>Cargando...</div>
-          ) : (
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>Email</th>
-                  <th>Rol</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {usuariosFiltrados.map((u) => (
-                  <tr key={u.id}>
-                    <td>{u.nombre}</td>
-                    <td>{u.email}</td>
-                    <td>{u.rol}</td>
-                    <td>
-                      <button
-                        className="btn btn-warning btn-sm me-2"
-                        onClick={() => handleEditar(u)}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => handleEliminar(u.id)}
-                      >
-                        Eliminar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </>
-      )}
-      {(modo === "nuevo" || modo === "editar") && (
-        <form onSubmit={handleGuardar} className="mb-4">
-          <div className="mb-2">
-            <label>Nombre</label>
-            <input
-              name="nombre"
-              value={form.nombre}
-              onChange={handleChange}
-              className="form-control"
-              required
-            />
-          </div>
-          <div className="mb-2">
-            <label>Email</label>
-            <input
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              className="form-control"
-              required
-              type="email"
-            />
-          </div>
-          <div className="mb-2">
-            <label>Rol</label>
-            <select
-              name="rol"
-              value={form.rol}
-              onChange={handleChange}
-              className="form-control"
-              required
-            >
-              <option value="">Seleccionar rol</option>
-              <option value="ADMIN">ADMIN</option>
-              <option value="PROFESOR">PROFESOR</option>
-              <option value="ALUMNO">ALUMNO</option>
-            </select>
-          </div>
-          <div className="mb-2">
-            <label>Contraseña</label>
-            <input
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              className="form-control"
-              type="password"
-              required={modo === "nuevo"}
-            />
-          </div>
-          <div className="mb-2">
-            <label>Repetir Contraseña</label>
-            <input
-              name="password2"
-              value={form.password2}
-              onChange={handleChange}
-              className="form-control"
-              type="password"
-              required={modo === "nuevo"}
-            />
-          </div>
-          <button
-            type="submit"
-            className="btn btn-success me-2"
-            disabled={loading}
-          >
-            Guardar
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => setModo("lista")}
-          >
-            Cancelar
-          </button>
-        </form>
-      )}
-      {modo === "crearClase" && (
-        <CrearClase onVolver={() => setModo("lista")} />
-      )}
-      <ToastCustomizado
-        show={toast.show}
-        onClose={() => setToast({ ...toast, show: false })}
-        message={toast.message}
-        variant={toast.variant === "danger" ? "danger" : "success"}
-      />
+      {seccion === "usuarios" && <UsuarioABM />}
+      {seccion === "productos" && <ProductoABM />}
+      {seccion === "clases" && <CrearClase onVolver={() => setSeccion("usuarios")} />}
     </div>
   );
 };

@@ -5,6 +5,8 @@ import ToastCustomizado from "./ToastCustomizado";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Asegúrate de importar los estilos de react-datepicker
 
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 const ReservaClases = () => {
   const [tipo, setTipo] = useState(null); // "PUNTUAL" o "MENSUAL"
   const [fecha, setFecha] = useState(null);
@@ -19,7 +21,7 @@ const ReservaClases = () => {
     setMensaje("");
     try {
       const res = await fetch(
-        `http://localhost:8080/reservas/disponibles?fecha=${
+        `${apiUrl}/reservas/disponibles?fecha=${
           fecha ? fecha.toISOString().slice(0, 10) : ""
         }`
       );
@@ -45,7 +47,7 @@ const ReservaClases = () => {
         tipoReserva: tipo,
         fecha: fecha ? fecha.toISOString().slice(0, 10) : "",
       };
-      const res = await fetch("http://localhost:8080/reservas", {
+      const res = await fetch(`${apiUrl}/reservas`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req),

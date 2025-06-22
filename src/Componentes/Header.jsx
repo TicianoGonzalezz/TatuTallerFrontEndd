@@ -60,7 +60,7 @@ const Header = () => {
                   <Nav.Link as={Link} to="/inicio">
                     Alquiler de Hornos
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/inicio">
+                  <Nav.Link as={Link} to="/tienda">
                     Tienda
                   </Nav.Link>
                   <Logout />

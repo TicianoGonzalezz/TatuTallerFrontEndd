@@ -1,23 +1,33 @@
-import { useRef, useState, useEffect } from 'react';
-import Boton from './Boton';
-import ToastCustomizado from './ToastCustomizado';
-import { Container, Row, Form, Col, FormGroup, FormLabel, FormControl } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
+import { useRef, useState, useEffect } from "react";
+import Boton from "./Boton";
+import ToastCustomizado from "./ToastCustomizado";
+import {
+  Container,
+  Row,
+  Form,
+  Col,
+  FormGroup,
+  FormLabel,
+  FormControl,
+} from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 const Login = () => {
-  const baseURL = "http://localhost:8080/usuario/login";
+  const baseURL = `http://localhost:8080/usuario/login`;
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastVariant, setToastVariant] = useState('danger');
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastVariant, setToastVariant] = useState("danger");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const apiKey = localStorage.getItem('apikey');
+    const apiKey = localStorage.getItem("apikey");
     if (apiKey != null) {
       navigate("/Inicio");
     }
@@ -50,49 +60,52 @@ const Login = () => {
       if (res.ok) {
         const data = await res.json();
         console.log("Datos recibidos:", data);
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('iduser', data.usuario.id);
-        localStorage.setItem('nombre', data.usuario.nombre);
-        localStorage.setItem('apikey', data.apikey);
-        localStorage.setItem('rol', data.usuario.rol);
-        setToastVariant('success');
-        setToastMessage('¡Bienvenido!');
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("iduser", data.usuario.id);
+        localStorage.setItem("nombre", data.usuario.nombre);
+        localStorage.setItem("apikey", data.apikey);
+        localStorage.setItem("rol", data.usuario.rol);
+        setToastVariant("success");
+        setToastMessage("¡Bienvenido!");
         setShowToast(true);
         navigate("/inicio");
-      } else {  
+      } else {
         const errorMsg = await res.text();
-        setToastVariant('danger');
+        setToastVariant("danger");
         setToastMessage(errorMsg);
         setShowToast(true);
       }
     } catch (error) {
-      setToastVariant('danger');
+      setToastVariant("danger");
       setToastMessage("Error de conexión");
       setShowToast(true);
     }
   };
 
   const handleGoogleLogin = (credentialResponse) => {
-    axios.post('http://localhost:8080/usuario/login-google', {
-      token: credentialResponse.credential
-    }).then(res => {
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('nombre', res.data.usuario.nombre);
-      localStorage.setItem('rol', res.data.usuario.rol);
-      localStorage.setItem('iduser', res.data.usuario.id); // <-- AGREGÁ ESTA LÍNEA
-      if (res.data.apikey) {
-        localStorage.setItem('apikey', res.data.apikey); // <-- SOLO SI TU BACKEND LO ENVÍA
-      }
-      navigate("/inicio");
-    }).catch(err => {
-      alert('Error en el login con Google');
-    });
+    axios
+      .post(`http://localhost:8080/usuario/login-google`, {
+        token: credentialResponse.credential,
+      })
+      .then((res) => {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("nombre", res.data.usuario.nombre);
+        localStorage.setItem("rol", res.data.usuario.rol);
+        localStorage.setItem("iduser", res.data.usuario.id); // <-- AGREGÁ ESTA LÍNEA
+        if (res.data.apikey) {
+          localStorage.setItem("apikey", res.data.apikey); // <-- SOLO SI TU BACKEND LO ENVÍA
+        }
+        navigate("/inicio");
+      })
+      .catch((err) => {
+        alert("Error en el login con Google");
+      });
   };
 
   return (
     <Container className="d-flex justify-content-center align-items-center min-vh-100">
       <div className="loginUsuario">
-        <h1 className='text-center mb-4'>Iniciar Sesión</h1>
+        <h1 className="text-center mb-4">Iniciar Sesión</h1>
         <Form onSubmit={handleLogin}>
           <Row>
             <Col>
@@ -118,8 +131,19 @@ const Login = () => {
               </FormGroup>
             </Col>
           </Row>
-          <Boton disabled={botonHabilitado} type="submit" name="Ingresar" variant="secondary" />
-          <p className='text-center mt-3'>¿Es tu primera vez?<Link className="link-inicio-sesion" to="/registroUsuario"> Registrate</Link></p>
+          <Boton
+            disabled={botonHabilitado}
+            type="submit"
+            name="Ingresar"
+            variant="secondary"
+          />
+          <p className="text-center mt-3">
+            ¿Es tu primera vez?
+            <Link className="link-inicio-sesion" to="/registroUsuario">
+              {" "}
+              Registrate
+            </Link>
+          </p>
           <ToastCustomizado
             show={showToast}
             onClose={() => setShowToast(false)}
@@ -131,7 +155,7 @@ const Login = () => {
         <GoogleLogin
           onSuccess={handleGoogleLogin}
           onError={() => {
-            alert('Error al iniciar sesión con Google');
+            alert("Error al iniciar sesión con Google");
           }}
         />
       </div>
@@ -140,4 +164,3 @@ const Login = () => {
 };
 
 export default Login;
-

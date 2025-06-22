@@ -3,10 +3,16 @@ import { Table, Button, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ToastCustomizado from "./ToastCustomizado";
 
+const url = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 const UsuarioLista = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState({ show: false, message: "", variant: "success" });
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    variant: "success",
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,12 +23,16 @@ const UsuarioLista = () => {
   const fetchUsuarios = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8080/usuario/listar");
+      const res = await fetch(`${url}/usuario/listar`);
       if (res.ok) {
         const data = await res.json();
         setUsuarios(data);
       } else {
-        setToast({ show: true, message: "Error al cargar usuarios", variant: "danger" });
+        setToast({
+          show: true,
+          message: "Error al cargar usuarios",
+          variant: "danger",
+        });
       }
     } catch (error) {
       setToast({ show: true, message: "Error de conexión", variant: "danger" });
@@ -33,9 +43,15 @@ const UsuarioLista = () => {
   const handleEliminar = async (id) => {
     if (!window.confirm("¿Seguro que deseas eliminar este usuario?")) return;
     try {
-      const res = await fetch(`http://localhost:8080/usuario/eliminar/${id}`, { method: "DELETE" });
+      const res = await fetch(`${apiUrl}/usuario/eliminar/${id}`, {
+        method: "DELETE",
+      });
       if (res.ok) {
-        setToast({ show: true, message: "Usuario eliminado", variant: "success" });
+        setToast({
+          show: true,
+          message: "Usuario eliminado",
+          variant: "success",
+        });
         fetchUsuarios();
       } else {
         const msg = await res.text();
@@ -49,7 +65,11 @@ const UsuarioLista = () => {
   return (
     <div className="container mt-4">
       <h2>Lista de Usuarios</h2>
-      <Button variant="primary" className="mb-3" onClick={() => navigate("/registro")}>
+      <Button
+        variant="primary"
+        className="mb-3"
+        onClick={() => navigate("/registro")}
+      >
         Nuevo Usuario
       </Button>
       {loading ? (
@@ -58,7 +78,6 @@ const UsuarioLista = () => {
         <Table striped bordered hover>
           <thead>
             <tr>
-              
               <th>Nombre</th>
               <th>Email</th>
               <th>Rol</th>
@@ -68,7 +87,6 @@ const UsuarioLista = () => {
           <tbody>
             {usuarios.map((u) => (
               <tr key={u.id}>
-                
                 <td>{u.nombre}</td>
                 <td>{u.email}</td>
                 <td>{u.rol}</td>
