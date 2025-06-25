@@ -25,6 +25,8 @@ const UsuarioABM = () => {
   const [editId, setEditId] = useState(null);
   const [toast, setToast] = useState({ show: false, message: "", variant: "success" });
   const [filtro, setFiltro] = useState("");
+  const [infoAlumno, setInfoAlumno] = useState(null);
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     if (usuarios.length === 0) dispatch(fetchUsuarios());
@@ -139,6 +141,26 @@ const UsuarioABM = () => {
     }
   };
 
+  const handleInfo = async (id) => {
+    // Buscá el usuario en la lista para obtener rol e imagenUrl
+    const usuarioBase = usuarios.find(u => u.id === id);
+    try {
+      const res = await fetch(`http://localhost:8080/usuario/info/${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        // Combiná los datos del endpoint info con los del usuario base
+        setInfoAlumno({
+          ...data,
+          rol: usuarioBase?.rol,
+          imagenUrl: usuarioBase?.imagenUrl,
+        });
+        setShowInfo(true);
+      }
+    } catch {
+      // Manejo de error opcional
+    }
+  };
+
   const usuariosFiltrados =
     filtro.trim() === ""
       ? usuarios
@@ -194,6 +216,9 @@ const UsuarioABM = () => {
                     )}
                   </td>
                   <td>
+                    <button className="btn btn-info btn-sm me-2" onClick={() => handleInfo(u.id)}>
+                      Info
+                    </button>
                     <button className="btn btn-warning btn-sm me-2" onClick={() => handleEditar(u)}>
                       Editar
                     </button>
@@ -245,6 +270,47 @@ const UsuarioABM = () => {
       {toast.show && (
         <div className={`alert alert-${toast.variant} mt-3`} role="alert">
           {toast.message}
+        </div>
+      )}
+
+      {/* Modal de información */}
+      {showInfo && infoAlumno && (
+        <div className="modal show d-block" tabIndex="-1" style={{ background: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Información de {infoAlumno.nombre}</h5>
+                <button type="button" className="btn-close" onClick={() => setShowInfo(false)}></button>
+              </div>
+              <div className="modal-body text-center">
+                {infoAlumno.imagenUrl && (
+                  <img
+                    src={`http://localhost:8080${infoAlumno.imagenUrl}`}
+                    alt={infoAlumno.nombre}
+                    width={80}
+                    height={80}
+                    className="rounded-circle mb-3"
+                    style={{ objectFit: "cover" }}
+                  />
+                )}
+                <h4>{infoAlumno.nombre}</h4>
+                <p><strong>Rol:</strong> {infoAlumno.rol}</p>
+                <p><strong>Email:</strong> {infoAlumno.email}</p>
+                <h6>Historial de clases:</h6>
+                <ul>
+                  {infoAlumno.clasesInscripto && infoAlumno.clasesInscripto.length > 0 ? (
+                    infoAlumno.clasesInscripto.map(clase => (
+                      <li key={clase.id}>
+                        {clase.nombre} - {clase.fechaDesde} a {clase.fechaHasta}
+                      </li>
+                    ))
+                  ) : (
+                    <li>No tiene clases inscriptas.</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
