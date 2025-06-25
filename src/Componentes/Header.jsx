@@ -25,49 +25,100 @@ const Header = () => {
   const ocultarNav = location.pathname === "/registroUsuario";
 
   return (
-    <header className="bg-white shadow-md">
-      <Navbar bg="dark" variant="dark" expand="lg">
+    <header style={{ background: "#F5F0E6" }}>
+      <Navbar
+        expand="lg"
+        style={{
+          background: "#F5F0E6",
+          borderBottom: "1px solid #eee",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+        }}
+      >
         <Container>
-          <Navbar.Brand as={Link} to="/">
-            Tatu Taller
+          <Navbar.Brand
+            as={Link}
+            to="/"
+            className="d-flex align-items-center gap-2"
+          >
+            <img
+              src="/img/imageslogotatu.png"
+              alt="Tatu Taller"
+              style={{ height: 48, width: "auto", maxWidth: 60 }}
+            />
+            <span
+              style={{ color: "#2D2D2D", fontWeight: 500, fontSize: "1.8rem" }}
+            >
+              Tatú Taller
+            </span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="main-navbar-nav" />
           <Navbar.Collapse id="main-navbar-nav">
             <Nav className="ms-auto align-items-center">
               {!ocultarNav && (
                 <>
-                  <Nav.Link as={Link} to="/inicio">
+                  <Nav.Link
+                    as={Link}
+                    to="/inicio"
+                    style={{ color: "#3A3A3A", fontWeight: 500 }}
+                  >
                     Inicio
                   </Nav.Link>
-                  {/* Solo muestra el link si es ADMIN */}
                   {rol === "ADMIN" && (
-                    <Nav.Link as={Link} to="/admin">
+                    <Nav.Link
+                      as={Link}
+                      to="/admin"
+                      style={{ color: "#D4B483", fontWeight: 500 }}
+                    >
                       Panel de Administración
                     </Nav.Link>
                   )}
-                  <Nav.Link as={Link} to="/inicio">
+                  <Nav.Link
+                    as={Link}
+                    to="/inicio"
+                    style={{ color: "#3A3A3A", fontWeight: 500 }}
+                  >
                     Nosotros
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/clases">
+                  <Nav.Link
+                    as={Link}
+                    to="/clases"
+                    style={{ color: "#3A3A3A", fontWeight: 500 }}
+                  >
                     Clases
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/inicio">
-                    Ciclo de Formacion
+                  <Nav.Link
+                    as={Link}
+                    to="/inicio"
+                    style={{ color: "#3A3A3A", fontWeight: 500 }}
+                  >
+                    Ciclo de Formación
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/inicio">
+                  <Nav.Link
+                    as={Link}
+                    to="/inicio"
+                    style={{ color: "#3A3A3A", fontWeight: 500 }}
+                  >
                     Cowork
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/inicio">
+                  <Nav.Link
+                    as={Link}
+                    to="/inicio"
+                    style={{ color: "#3A3A3A", fontWeight: 500 }}
+                  >
                     Alquiler de Hornos
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/tienda">
+                  <Nav.Link
+                    as={Link}
+                    to="/tienda"
+                    style={{ color: "#D4B483", fontWeight: 500 }}
+                  >
                     Tienda
                   </Nav.Link>
                   <Logout />
                 </>
               )}
               {nombre && (
-                <span className="text-white ms-3">
+                <span style={{ color: "#2D2D2D" }} className="ms-3">
                   Bienvenido, <strong>{nombre}</strong>
                 </span>
               )}

@@ -2,12 +2,27 @@ import UsuarioABM from "./UsuarioABM";
 import ProductoABM from "./ProductoAMB";
 import CrearClase from "./CrearClase";
 import ToastCustomizado from "./ToastCustomizado";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchUsuarios,
+  eliminarUsuario,
+  actualizarUsuario,
+  agregarUsuario,
+} from "../Features/usuariosSlice";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
+const initialForm = {
+  nombre: "",
+  email: "",
+  rol: "",
+  password: "",
+  password2: "",
+  archivo: null,
+};
+
 const AdminPanel = () => {
-<<<<<<< HEAD
   const dispatch = useDispatch();
   const usuarios = useSelector((state) => state.usuarios.lista);
   const loading = useSelector((state) => state.usuarios.loading);
@@ -214,28 +229,32 @@ const AdminPanel = () => {
             u.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
             u.email.toLowerCase().includes(filtro.toLowerCase())
         );
-=======
   const [seccion, setSeccion] = useState("usuarios");
->>>>>>> ae66fc5af3cdf3b5cfe8bdbb0a30f3ce5afa223f
 
   return (
     <div className="container mt-4">
       <h1>Panel de Administración</h1>
       <div className="mb-4">
         <button
-          className={`btn me-2 ${seccion === "usuarios" ? "btn-primary" : "btn-outline-primary"}`}
+          className={`btn me-2 ${
+            seccion === "usuarios" ? "btn-primary" : "btn-outline-primary"
+          }`}
           onClick={() => setSeccion("usuarios")}
         >
           Usuarios
         </button>
         <button
-          className={`btn me-2 ${seccion === "productos" ? "btn-primary" : "btn-outline-primary"}`}
+          className={`btn me-2 ${
+            seccion === "productos" ? "btn-primary" : "btn-outline-primary"
+          }`}
           onClick={() => setSeccion("productos")}
         >
           Productos
         </button>
         <button
-          className={`btn ${seccion === "clases" ? "btn-primary" : "btn-outline-primary"}`}
+          className={`btn ${
+            seccion === "clases" ? "btn-primary" : "btn-outline-primary"
+          }`}
           onClick={() => setSeccion("clases")}
         >
           Clases
@@ -244,7 +263,9 @@ const AdminPanel = () => {
 
       {seccion === "usuarios" && <UsuarioABM />}
       {seccion === "productos" && <ProductoABM />}
-      {seccion === "clases" && <CrearClase onVolver={() => setSeccion("usuarios")} />}
+      {seccion === "clases" && (
+        <CrearClase onVolver={() => setSeccion("usuarios")} />
+      )}
     </div>
   );
 };
